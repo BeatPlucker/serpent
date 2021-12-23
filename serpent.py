@@ -1,3 +1,4 @@
+import ctr
 import utils
 
 
@@ -236,10 +237,9 @@ def encrypt_words(w0, w1, w2, w3, subkeys):
     return w0, w1, w2, w3
 
 
-def encrypt(plain_text, key):
-    w0, w1, w2, w3 = utils.words_from_bytes(plain_text)
-    key_words = utils.words_from_bytes(key)
-    subkeys = key_schedule(key_words)
-    encrypted_words = encrypt_words(w0, w1, w2, w3, subkeys)
-    encrypted_bytes = utils.bytes_from_words(encrypted_words)
-    return encrypted_bytes
+def encrypt(plain_text, key, nonce):
+    return ctr.encrypt(plain_text, key, nonce)
+
+
+def decrypt(cipher_text, key, nonce):
+    return encrypt(cipher_text, key, nonce)
