@@ -20,3 +20,7 @@ def encrypt(plain_text, key, nonce):
         cipher_text += cipher_block
         counter += 1
     return cipher_text
+
+
+def decrypt(cipher_text, key, nonce):
+    return encrypt(cipher_text, key, nonce)
