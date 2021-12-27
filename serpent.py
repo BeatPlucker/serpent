@@ -1,5 +1,3 @@
-import ctr
-import utils
 
 
 phi = 0x9e3779b9
@@ -235,11 +233,3 @@ def encrypt_words(w0, w1, w2, w3, subkeys):
     w0, w1, w2, w3 = s_box_7(w0, w1, w2, w3)
     w0, w1, w2, w3 = key_mixing(w0, w1, w2, w3, subkeys[32])
     return w0, w1, w2, w3
-
-
-def encrypt(plain_text, key, nonce):
-    return ctr.encrypt(plain_text, key, nonce)
-
-
-def decrypt(cipher_text, key, nonce):
-    return encrypt(cipher_text, key, nonce)
