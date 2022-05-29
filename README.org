@@ -1,0 +1,29 @@
+#+title: Serpent
+
+[[https://www.cl.cam.ac.uk/~rja14/serpent.html][Serpent]] is a 128-bit block cipher designed by Ross Anderson, Eli Biham and Lars Knudsen as a proposal for the Advanced Encryption Standard (1998).
+This implementation takes as a reference the original [[http://www.cl.cam.ac.uk/~rja14/Papers/serpent.tar.gz][C]] and [[https://www.cl.cam.ac.uk/~fms27/serpent/serpent.py.html][Python]] code written by Frank Stajano based on the submission [[https://www.cl.cam.ac.uk/~rja14/Papers/serpent.pdf][paper]] and combines it with an optimized [[http://www.ii.uib.no/~osvik/pub/aes3.pdf][version]] of the S-boxes developed by Dag Arne Osvik.
+
+#+BEGIN_QUOTE
+Nothing better than a Python to write a Serpent. ---Frank Stajano, 1998
+#+END_QUOTE
+
+** Usage
+
+Encrypt a 128-bit block using a 256-bit key:
+
+#+BEGIN_SRC python
+>>> from utils import words_from_bytes, bytes_from_words
+>>> from serpent import encrypt_words
+>>> 
+>>> 
+>>> plain_text = b'\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00'
+>>> key = b'\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x08'
+>>> 
+>>> plain_text_words = words_from_bytes(plain_text)
+>>> key_words = words_from_bytes(key)
+>>> 
+>>> cypher_text_words = encrypt_words(plain_text_words, key_words)
+>>> cypher_text = bytes_from_words(cypher_text_words)
+>>> cypher_text.hex()
+'b7c9b6bd6b749af86c8ed5ee57659dec'
+#+END_SRC

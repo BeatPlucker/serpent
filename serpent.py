@@ -1,9 +1,4 @@
-import ctr
-import utils
-
-
 phi = 0x9e3779b9
-
 
 def s_box_0(block_words):
     w0, w1, w2, w3 = block_words
@@ -27,7 +22,6 @@ def s_box_0(block_words):
     w4 ^= w3
     return w1, w4, w2, w0
 
-
 def s_box_1(block_words):
     w0, w1, w2, w3 = block_words
     w0 ^= 0xffffffff
@@ -50,7 +44,6 @@ def s_box_1(block_words):
     w0 ^= w4
     return w2, w0, w3, w1
 
-
 def s_box_2(block_words):
     w0, w1, w2, w3 = block_words
     w4 = w0
@@ -70,7 +63,6 @@ def s_box_2(block_words):
     w1 ^= w4
     w4 ^= 0xffffffff
     return w2, w3, w1, w4
-
 
 def s_box_3(block_words):
     w0, w1, w2, w3 = block_words
@@ -94,7 +86,6 @@ def s_box_3(block_words):
     w1 |= w3
     w1 ^= w0
     return w1, w2, w3, w4
-
 
 def s_box_4(block_words):
     w0, w1, w2, w3 = block_words
@@ -120,7 +111,6 @@ def s_box_4(block_words):
     w4 ^= w2
     return w1, w4, w0, w3
 
-
 def s_box_5(block_words):
     w0, w1, w2, w3 = block_words
     w0 ^= w1
@@ -144,7 +134,6 @@ def s_box_5(block_words):
     w2 ^= w4
     return w1, w3, w0, w2
 
-
 def s_box_6(block_words):
     w0, w1, w2, w3 = block_words
     w2 ^= 0xffffffff
@@ -166,7 +155,6 @@ def s_box_6(block_words):
     w2 &= w4
     w2 ^= w3
     return w0, w1, w4, w2
-
 
 def s_box_7(block_words):
     w0, w1, w2, w3 = block_words
@@ -192,13 +180,10 @@ def s_box_7(block_words):
     w4 ^= w2
     return w4, w3, w1, w0
 
-
 s_boxes = (s_box_0, s_box_1, s_box_2, s_box_3, s_box_4, s_box_5, s_box_6, s_box_7)
-
 
 def rotate_left(word, count):
     return ((word << count) | (word >> (32 - count))) & 0xffffffff
-
 
 def key_mixing(block_words, subkey_words):
     w0, w1, w2, w3 = block_words
@@ -208,7 +193,6 @@ def key_mixing(block_words, subkey_words):
     w2 ^= s2
     w3 ^= s3
     return w0, w1, w2, w3
-
 
 def linear_transformation(block_words):
     w0, w1, w2, w3 = block_words
@@ -224,7 +208,6 @@ def linear_transformation(block_words):
     w2 = rotate_left(w2, 22)
     return w0, w1, w2, w3
 
-
 def key_schedule(key_words):
     for i in range(132):
         key_words.append(rotate_left(key_words[i] ^ key_words[i+3] ^ key_words[i+5] ^ key_words[i+7] ^ phi ^ i, 11))
@@ -236,8 +219,8 @@ def key_schedule(key_words):
     subkeys_words = [prekeys[i:i+4] for i in range(0, 132, 4)]
     return subkeys_words
 
-
-def encrypt_words(block_words, subkeys_words):
+def encrypt_words(block_words, key_words):
+    subkeys_words = key_schedule(key_words)
     for i in range(31):
         block_words = key_mixing(block_words, subkeys_words[i])
         block_words = s_boxes[i%8](block_words)
@@ -246,24 +229,3 @@ def encrypt_words(block_words, subkeys_words):
     block_words = s_box_7(block_words)
     block_words = key_mixing(block_words, subkeys_words[32])
     return block_words
-
-
-def encrypt(plain_text, key, nonce):
-    key_words = utils.words_from_bytes(key)
-    subkeys_words = key_schedule(key_words)
-    nonce = int.from_bytes(nonce, 'big')
-    cipher_text = b''
-    i = 0
-    counter = 0
-    while plain_text[i:i+16]:
-        plain_words = utils.words_from_bytes(plain_text[i:i+16])
-        cipher_words = ctr.ctr_mode(plain_words, subkeys_words, nonce, counter)
-        cipher_block = utils.bytes_from_words(cipher_words)
-        cipher_text += cipher_block
-        i += 16
-        counter += 1
-    return cipher_text
-
-
-def decrypt(cipher_text, key, nonce):
-    return encrypt(cipher_text, key, nonce)
