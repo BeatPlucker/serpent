@@ -1,6 +1,7 @@
 #+title: Serpent
 
 [[https://www.cl.cam.ac.uk/~rja14/serpent.html][Serpent]] is a 128-bit block cipher designed by Ross Anderson, Eli Biham and Lars Knudsen as a proposal for the Advanced Encryption Standard (1998).
+
 This implementation takes as a reference the original [[http://www.cl.cam.ac.uk/~rja14/Papers/serpent.tar.gz][C]] and [[https://www.cl.cam.ac.uk/~fms27/serpent/serpent.py.html][Python]] code written by Frank Stajano based on the submission [[https://www.cl.cam.ac.uk/~rja14/Papers/serpent.pdf][paper]] and combines it with an optimized [[http://www.ii.uib.no/~osvik/pub/aes3.pdf][version]] of the S-boxes developed by Dag Arne Osvik.
 
 #+BEGIN_QUOTE
